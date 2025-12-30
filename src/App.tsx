@@ -1,7 +1,7 @@
 
 import LogiksGraph from "./components/logiksGraph/index.js";
 
-import { exapmle } from "./data.js";
+import { exapmle1 } from "./data.js";
 
 function App() {
     const getTaskStatus = () => ({
@@ -51,7 +51,7 @@ function App() {
     return (
         <div style={{ height: 800 }}>
             <LogiksGraph
-                config={exapmle}
+                config={exapmle1}
                 methods={{
                     getTaskStatus, getTaskDataByStatus, getPendingTask, getWorkLoadTask,
                     getTotalRevenue, getTotalWonLostRatio, getTotalEnquiry, getTotalDeal,
