@@ -1,5 +1,5 @@
 
-import LogiksGraph from "./graph/index.js";
+import LogiksGraph from "./components/logiksGraph/index.js";
 
 import { exapmle } from "./data.js";
 

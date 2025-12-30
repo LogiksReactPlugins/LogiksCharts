@@ -1,5 +1,5 @@
 
-import GraphRenderer from "./components/GraphRenderer.js";
+import GraphRenderer from "./GraphRenderer.js";
 import type { GraphProps } from "./Grpah.types.js";
 
 export default function Graph({ config, methods, sqlOpsConfig }: GraphProps) {

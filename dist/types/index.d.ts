@@ -1,4 +1,4 @@
-export { default as LogiksGraph } from './graph/Graph.js';
-export { default } from './graph/Graph.js';
-export * from './graph/Grpah.types.js';
+export { default as LogiksGraph } from './components/logiksGraph/Graph.js';
+export { default } from './components/logiksGraph/Graph.js';
+export * from './components/logiksGraph/Grpah.types.js';
 //# sourceMappingURL=index.d.ts.map

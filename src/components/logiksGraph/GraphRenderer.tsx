@@ -1,9 +1,9 @@
 
 import { useEffect, useState } from "react";
-import type { GraphRendererProps } from "../Grpah.types.js";
-import BarChart from "./graphs/barChart.js";
-import LineChart from "./graphs/lineChart.js";
-import PieChart from "./graphs/pieChart.js";
+import type { GraphRendererProps } from "./Grpah.types.js";
+import BarChart from "../graphs/barChart.js";
+import LineChart from "../graphs/lineChart.js";
+import PieChart from "../graphs/pieChart.js";
 
 
 
