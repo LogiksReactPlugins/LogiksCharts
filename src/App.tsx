@@ -1,7 +1,7 @@
 
 import LogiksGraph from "./components/logiksGraph/index.js";
 
-import { exapmle1 } from "./data.js";
+import { example } from "./data.js";
 
 function App() {
     const getTaskStatus = () => ({
@@ -49,16 +49,26 @@ function App() {
 
 
     return (
-        <div style={{ height: 800 }}>
+        <div style={{ height: 500 }}>
             <LogiksGraph
-                config={exapmle1}
+                config={example}
                 methods={{
                     getTaskStatus, getTaskDataByStatus, getPendingTask, getWorkLoadTask,
                     getTotalRevenue, getTotalWonLostRatio, getTotalEnquiry, getTotalDeal,
                     getTaskDataByUser
 
                 }}
-                sqlOpsConfig={{}}
+                sqlOpsConfig={{
+        "baseURL": "http://192.168.0.20:9999",
+        "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWNjZXNzIiwiYXBwSWQiOiJkZW1vIiwiaWQiOjEsInVzZXJJZCI6ImFkbWluIiwidXNlcm5hbWUiOiJBZG1pbiIsInRlbmFudElkIjoiU0lMSyIsImd1aWQiOiJTSUxLIiwicm9sZXMiOltdLCJzY29wZXMiOltdLCJpcCI6IjE5Mi4xNjguMC42NiIsImRldmljZVR5cGUiOiJ3ZWIiLCJpYXQiOjE3NjcxMDI3NzAsImV4cCI6MTc2NzEwNjM3MCwianRpIjoiYWNjOjE6MTc2NzEwMjc3MDY2Nzp3ZWIifQ.bjPbg6TGhfx99I5z6hq5wQgriWIWpR7rYvAPvzKptM8",
+        "dbopsGetHash": "/api/dbops",
+        "dbopsGetRefId": "/api/dbops/save",
+        "dbopsCreate": "/api/dbops/create",
+        "dbopsUpdate": "/api/dbops/update",
+        "dbopsFetch": "/api/dbops/fetch",
+        "registerQuery": "/api/query/save",
+        "runQuery": "/api/query/run"
+    }}
 
             />
         </div>

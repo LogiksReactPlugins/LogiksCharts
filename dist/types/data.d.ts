@@ -1,4 +1,4 @@
-export declare const exapmle: {
+export declare const example: {
     title: string;
     width: number;
     config: {
@@ -29,11 +29,11 @@ export declare const exapmle: {
         table: string;
         cols: string;
         where: {
-            "lead_tbl.blocked": string;
-            "lead_tbl.guid='{$_SESSION['SESS_GUID']}'": string;
+            "leads_tbl.blocked": string;
+            "leads_tbl.guid='{$_SESSION['SESS_GUID']}'": string;
             "lead_date >='{$startDate}'": string;
             "lead_date <='{$endDate}'": string;
-            "(lead_tbl.assigned_to='{$_SESSION['SESS_USER_ID']}' OR lead_tbl.open_by='{$_SESSION['SESS_USER_ID']}' OR lead_tbl.manager = '{$_SESSION['SESS_USER_ID']}' OR {$_SESSION['SESS_PRIVILEGE_ID']} <= {$ADMIN_PRIVILEGE_RANGE})": string;
+            "(leads_tbl.assigned_to='{$_SESSION['SESS_USER_ID']}' OR leads_tbl.open_by='{$_SESSION['SESS_USER_ID']}' OR leads_tbl.manager = '{$_SESSION['SESS_USER_ID']}' OR {$_SESSION['SESS_PRIVILEGE_ID']} <= {$ADMIN_PRIVILEGE_RANGE})": string;
         };
         groupby: string;
     };

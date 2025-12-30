@@ -4,6 +4,7 @@ import type { GraphRendererProps } from "./Grpah.types.js";
 import BarChart from "../graphs/barChart.js";
 import LineChart from "../graphs/lineChart.js";
 import PieChart from "../graphs/pieChart.js";
+import { normalizeData } from "../utils.js";
 
 
 
@@ -13,7 +14,7 @@ const GraphRenderer = ({ graph_config, methods = {}, sqlOpsUrls }: GraphRenderer
   if (!graph_config?.config?.type) return null;
 
   const { config, source } = graph_config;
-  console.log("graph_config", graph_config);
+
 
 
   const [data, setData] = useState<any>({ categories: [], series: [] });
@@ -77,6 +78,8 @@ const GraphRenderer = ({ graph_config, methods = {}, sqlOpsUrls }: GraphRenderer
             })
 
           }).then(res => res.json());
+         
+          
 
           result = res?.data?.data ?? res?.data ?? {}
 
@@ -85,15 +88,23 @@ const GraphRenderer = ({ graph_config, methods = {}, sqlOpsUrls }: GraphRenderer
         }
 
       }
-      console.log("graph_configRenderer result", result)
+   
+console.log("result",result);
 
-      setData(result); // <-- only normalized data
+
+      const normalized = normalizeData(result, config);
+    
+
+      setData(normalized);
+
     };
 
     load();
   }, [JSON.stringify(source)]);
 
   console.log("data", data);
+  console.log("config",config);
+  
 
   switch (graph_config?.config.type) {
 

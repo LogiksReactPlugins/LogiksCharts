@@ -69,6 +69,9 @@ export default function LineChartComponent({ config, data }: Props) {
     series: finalSeries
   };
 
+  console.log("options",options);
+  
+
   return (
     <ReactEChartsCore
       echarts={echarts}

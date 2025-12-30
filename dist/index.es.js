@@ -23619,7 +23619,7 @@ function RI({ config: r, data: t }) {
     // global options last if needed (optional)
     series: o
   };
-  return /* @__PURE__ */ or.jsx(
+  return console.log("options", s), /* @__PURE__ */ or.jsx(
     Jf,
     {
       echarts: cc,
@@ -23660,29 +23660,44 @@ function NI({ config: r, data: t }) {
     }
   );
 }
-const kI = ({ graph_config: r, methods: t = {}, sqlOpsUrls: e }) => {
+const kI = (r) => r.map((t) => ({
+  name: t.category,
+  // generic label
+  value: Object.values(t).find((e) => typeof e == "number")
+})), BI = (r) => {
+  const t = Object.keys(r[0]), e = "category", n = t.filter((i) => i !== e);
+  return {
+    categories: r.map((i) => i[e]),
+    series: n.map((i) => ({
+      name: i,
+      data: r.map((a) => Number(a[i] ?? 0))
+    }))
+  };
+};
+function FI(r, t) {
+  return !Array.isArray(r) || r.length === 0 ? { categories: [], series: [] } : ["pie", "donut", "rose"].includes(t.type) ? kI(r) : BI(r);
+}
+const VI = ({ graph_config: r, methods: t = {}, sqlOpsUrls: e }) => {
   if (!r?.config?.type) return null;
-  const { config: n, source: i } = r;
-  console.log("graph_config", r);
-  const [a, o] = N_({ categories: [], series: [] });
+  const { config: n, source: i } = r, [a, o] = N_({ categories: [], series: [] });
   switch (k_(() => {
     (async () => {
       let u = {};
       if (i?.type === "method") {
-        const l = t[i.method];
-        u = l ? await Promise.resolve(l()) : {};
+        const f = t[i.method];
+        u = f ? await Promise.resolve(f()) : {};
       } else if (i?.type === "api" && i.url)
         u = await fetch(i.url, {
           method: i.method || "GET",
           headers: i.headers || {}
-        }).then((l) => l.json());
+        }).then((f) => f.json());
       else if (i?.type === "sql") {
         if (!e) {
           console.error("SQL source requires formJson.endPoints but it is missing");
           return;
         }
         try {
-          const l = await fetch(e.baseURL + e.registerQuery, {
+          const f = await fetch(e.baseURL + e.registerQuery, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -23694,30 +23709,32 @@ const kI = ({ graph_config: r, methods: t = {}, sqlOpsUrls: e }) => {
                 table: i.table
               }
             })
-          }).then((h) => h.json());
-          if (!l.queryid) {
+          }).then((v) => v.json());
+          if (!f.queryid) {
             console.log("queryid not generated");
             return;
           }
-          const f = await fetch(e.baseURL + e.runQuery, {
+          const h = await fetch(e.baseURL + e.runQuery, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${e?.accessToken}`
             },
             body: JSON.stringify({
-              queryid: l.queryid,
+              queryid: f.queryid,
               filter: {}
             })
-          }).then((h) => h.json());
-          u = f?.data?.data ?? f?.data ?? {};
-        } catch (l) {
-          console.error("API fetch failed:", l);
+          }).then((v) => v.json());
+          u = h?.data?.data ?? h?.data ?? {};
+        } catch (f) {
+          console.error("API fetch failed:", f);
         }
       }
-      console.log("graph_configRenderer result", u), o(u);
+      console.log("result", u);
+      const l = FI(u, n);
+      o(l);
     })();
-  }, [JSON.stringify(i)]), console.log("data", a), r?.config.type) {
+  }, [JSON.stringify(i)]), console.log("data", a), console.log("config", n), r?.config.type) {
     case "bar":
       return /* @__PURE__ */ or.jsx(OI, { config: n, data: a });
     case "line":
@@ -23731,10 +23748,10 @@ const kI = ({ graph_config: r, methods: t = {}, sqlOpsUrls: e }) => {
       ] });
   }
 };
-function FI({ config: r, methods: t, sqlOpsConfig: e }) {
-  return /* @__PURE__ */ or.jsx("div", { className: " h-full w-full", children: /* @__PURE__ */ or.jsx(kI, { graph_config: r, methods: t || {}, sqlOpsUrls: e }) });
+function GI({ config: r, methods: t, sqlOpsConfig: e }) {
+  return /* @__PURE__ */ or.jsx("div", { className: " h-full w-full", children: /* @__PURE__ */ or.jsx(VI, { graph_config: r, methods: t || {}, sqlOpsUrls: e }) });
 }
 export {
-  FI as LogiksGraph,
-  FI as default
+  GI as LogiksGraph,
+  GI as default
 };

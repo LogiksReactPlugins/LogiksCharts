@@ -1,4 +1,4 @@
-export const exapmle = {
+export const example = {
     "title": "Task Status",
     "width": 6,
     "config": {
@@ -14,17 +14,19 @@ export const exapmle = {
     },
     "source": {
         "type": "sql",
-        "table": "lead_tbl",
-        "cols": "count(lead_tbl.id) as value,lead_tbl.lead_status as title",
+        "table": "leads_tbl",
+        "cols": "count(leads_tbl.id) as value,leads_tbl.lead_status as category",
         "where": {
-            "lead_tbl.blocked": "false",
-            "lead_tbl.guid='{$_SESSION['SESS_GUID']}'": "RAW",
+            "leads_tbl.blocked": "false",
+            "leads_tbl.guid='{$_SESSION['SESS_GUID']}'": "RAW",
             "lead_date >='{$startDate}'": "RAW",
             "lead_date <='{$endDate}'": "RAW",
-            "(lead_tbl.assigned_to='{$_SESSION['SESS_USER_ID']}' OR lead_tbl.open_by='{$_SESSION['SESS_USER_ID']}' OR lead_tbl.manager = '{$_SESSION['SESS_USER_ID']}' OR {$_SESSION['SESS_PRIVILEGE_ID']} <= {$ADMIN_PRIVILEGE_RANGE})": "RAW"
+            "(leads_tbl.assigned_to='{$_SESSION['SESS_USER_ID']}' OR leads_tbl.open_by='{$_SESSION['SESS_USER_ID']}' OR leads_tbl.manager = '{$_SESSION['SESS_USER_ID']}' OR {$_SESSION['SESS_PRIVILEGE_ID']} <= {$ADMIN_PRIVILEGE_RANGE})": "RAW"
         },
-        "groupby": "lead_tbl.lead_status"
+        "groupby": "leads_tbl.lead_status"
     }
+
+
 }
 
 export const exapmle1 = {
