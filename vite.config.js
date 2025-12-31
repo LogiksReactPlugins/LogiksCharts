@@ -32,7 +32,8 @@ export default defineConfig(({ mode }) => {
           globals: {
             react: 'React',
             'react-dom': 'ReactDOM'
-          }
+          },
+           exports:"named"
         }
       },
       cssCodeSplit: false

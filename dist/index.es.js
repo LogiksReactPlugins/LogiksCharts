@@ -23626,7 +23626,7 @@ function RI({ config: r, data: t }) {
     {
       echarts: cc,
       option: s,
-      className: "w-full h-full"
+      style: { width: "100%", height: "100%" }
     }
   );
 }
@@ -23657,7 +23657,7 @@ function NI({ config: r, data: t }) {
     {
       echarts: cc,
       option: a,
-      className: "w-full h-full"
+      style: { width: "100%", height: "100%" }
     }
   );
 }
@@ -23757,7 +23757,7 @@ const FI = ({ graph_config: r, methods: t = {}, sqlOpsUrls: e }) => {
   }
 };
 function zI({ config: r, methods: t, sqlOpsConfig: e }) {
-  return /* @__PURE__ */ or.jsx("div", { className: " h-full w-full", children: /* @__PURE__ */ or.jsx(FI, { graph_config: r, methods: t || {}, sqlOpsUrls: e }) });
+  return /* @__PURE__ */ or.jsx("div", { className: "h-[350px] w-full", children: /* @__PURE__ */ or.jsx(FI, { graph_config: r, methods: t || {}, sqlOpsUrls: e }) });
 }
 export {
   zI as LogiksGraph,

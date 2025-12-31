@@ -77,7 +77,7 @@ export default function LineChartComponent({ config, data }: Props) {
     <ReactEChartsCore
       echarts={echarts}
       option={options}
-      className="w-full h-full"
+      style={{ width: "100%", height: "100%" }}
     />
   );
 }
