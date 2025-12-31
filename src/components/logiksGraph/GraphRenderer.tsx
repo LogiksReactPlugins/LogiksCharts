@@ -78,8 +78,7 @@ const GraphRenderer = ({ graph_config, methods = {}, sqlOpsUrls }: GraphRenderer
 
       }
 
-      console.log("result", result);
-
+  
       const rows = extractRows(result)
       const normalized = normalizeData(rows, config);
 
@@ -94,9 +93,9 @@ const GraphRenderer = ({ graph_config, methods = {}, sqlOpsUrls }: GraphRenderer
 
   switch (graph_config?.config.type) {
 
-    case "bar": return <BarChart config={config} data={data} />;
-    case "line": return <LineChart config={config} data={data} />;
-    case "pie": return <PieChart config={config} data={data} />;
+    case "bar": return <div className="w-full h-full"> <BarChart config={config} data={data} /></div>;
+    case "line": return <div className="w-full h-full"><LineChart config={config} data={data} /></div>;
+    case "pie": return <div className="w-full h-full"><PieChart config={config} data={data} /></div>;
 
     default:
       return <div className="text-red-500">Unknown chart type: {config.type}</div>;
