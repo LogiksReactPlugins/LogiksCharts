@@ -23717,10 +23717,7 @@ const FI = ({ graph_config: r, methods: t = {}, sqlOpsUrls: e }) => {
               Authorization: `Bearer ${e?.accessToken}`
             },
             body: JSON.stringify({
-              query: {
-                cols: i.cols,
-                table: i.table
-              }
+              query: i
             })
           }).then((v) => v.json());
           if (!h.queryid) {

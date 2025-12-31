@@ -43,11 +43,7 @@ const GraphRenderer = ({ graph_config, methods = {}, sqlOpsUrls }: GraphRenderer
               "Authorization": `Bearer ${sqlOpsUrls?.accessToken}`
             },
             body: JSON.stringify({
-              query: {
-                cols: source.cols,
-                table: source.table,
-
-              }
+              query: source
             })
           })
             .then(res => res.json());
