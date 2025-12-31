@@ -23759,7 +23759,8 @@ const FI = ({ graph_config: r, methods: t = {}, sqlOpsUrls: e }) => {
   }
 };
 function zI({ config: r, methods: t, sqlOpsConfig: e }) {
-  return /* @__PURE__ */ _e.jsx("div", { className: "h-[250px] w-full", children: /* @__PURE__ */ _e.jsx(FI, { graph_config: r, methods: t || {}, sqlOpsUrls: e }) });
+  const n = r.config?.height ?? 250;
+  return /* @__PURE__ */ _e.jsx("div", { style: { height: n, width: "100%" }, children: /* @__PURE__ */ _e.jsx(FI, { graph_config: r, methods: t || {}, sqlOpsUrls: e }) });
 }
 export {
   zI as LogiksGraph,
