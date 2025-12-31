@@ -24,7 +24,7 @@ interface Props {
 }
 
 export default function LineChartComponent({ config, data }: Props) {
-  console.log("LineChartComponent data",data);
+
   const categories = data?.categories || [];
   const series = data?.series || [];
   const baseSeries = config.options?.series || [];
@@ -34,8 +34,10 @@ export default function LineChartComponent({ config, data }: Props) {
   let finalSeries: SeriesOption[] = series.map((s: any, i: number) => ({
     ...(baseSeries[i] || {}),   // style/config provided from JSON first
     ...s,                       // inject dynamic data from API
+    name: s.name,
     type: "line",
-     areaStyle: subType === "area" || subType === "stacked" ? {} : undefined
+    data: Array.isArray(s.data) ? s.data : [],
+    areaStyle: subType === "area" || subType === "stacked" ? {} : undefined
   }));
 
   // Handle subtypes
@@ -69,8 +71,7 @@ export default function LineChartComponent({ config, data }: Props) {
     series: finalSeries
   };
 
-  console.log("options",options);
-  
+
 
   return (
     <ReactEChartsCore

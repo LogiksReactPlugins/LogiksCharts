@@ -23543,12 +23543,13 @@ const LI = (r, t) => {
   ];
 };
 function OI({ config: r = {}, data: t = {} }) {
-  console.log("BarChartComponent data", t);
   const e = t.categories || [], n = t.series || [], i = r.options?.series || [], { subType: a } = r;
   let o = n.map((u, l) => ({
     ...i[l] || {},
     ...u,
-    type: "bar"
+    name: u.name,
+    type: "bar",
+    data: Array.isArray(u.data) ? u.data : []
   }));
   a === "stacked" && (o = o.map((u) => ({ ...u, stack: "total" }))), a === "sorting" && (o = o.map((u) => ({ ...u, realtimeSort: !0 }))), a === "waterfall" && (o = LI(n, r));
   const s = {
@@ -23588,14 +23589,15 @@ ke([
   wc
 ]);
 function RI({ config: r, data: t }) {
-  console.log("LineChartComponent data", t);
   const e = t?.categories || [], n = t?.series || [], i = r.options?.series || [], { subType: a } = r;
   let o = n.map((u, l) => ({
     ...i[l] || {},
     // style/config provided from JSON first
     ...u,
     // inject dynamic data from API
+    name: u.name,
     type: "line",
+    data: Array.isArray(u.data) ? u.data : [],
     areaStyle: a === "area" || a === "stacked" ? {} : void 0
   }));
   a === "smooth" && (o = o.map((u) => ({ ...u, smooth: !0 }))), a === "area" && (o = o.map((u) => ({ ...u, areaStyle: {} }))), a === "stacked" && (o = o.map((u) => ({ ...u, stack: "total", areaStyle: {} })));
@@ -23619,7 +23621,7 @@ function RI({ config: r, data: t }) {
     // global options last if needed (optional)
     series: o
   };
-  return console.log("options", s), /* @__PURE__ */ or.jsx(
+  return /* @__PURE__ */ or.jsx(
     Jf,
     {
       echarts: cc,
@@ -23630,14 +23632,13 @@ function RI({ config: r, data: t }) {
 }
 ke([ZE, Sc, _c, bc, wc]);
 function NI({ config: r, data: t }) {
-  console.log("PieChartComponent data", t);
   const { subType: e } = r, n = t.series || [];
   let i = {
     type: "pie",
     radius: "60%",
     ...r.options?.series?.[0],
     // user overrides default series config
-    data: n
+    data: n.map((o) => ({ name: o.name, value: o.value }))
     // dynamic injected last
   };
   e === "donut" && (i.radius = r.options?.series?.[0]?.radius ?? ["40%", "70%"]), e === "rose" && (i = { ...i, roseType: "area" });
@@ -23660,44 +23661,56 @@ function NI({ config: r, data: t }) {
     }
   );
 }
-const kI = (r) => r.map((t) => ({
-  name: t.category,
-  // generic label
-  value: Object.values(t).find((e) => typeof e == "number")
-})), BI = (r) => {
-  const t = Object.keys(r[0]), e = "category", n = t.filter((i) => i !== e);
-  return {
-    categories: r.map((i) => i[e]),
-    series: n.map((i) => ({
-      name: i,
-      data: r.map((a) => Number(a[i] ?? 0))
-    }))
+function kI(r, t) {
+  if (!Array.isArray(r) || r.length === 0)
+    return { categories: [], series: [] };
+  const e = r[0], n = Object.keys(e), i = t.labelKey || n.find((l) => typeof e[l] != "number") || n[0], a = t.valueKey || n.find((l) => typeof e[l] == "number") || n[1], o = t.seriesKey;
+  if (["pie", "donut", "rose"].includes(t.type))
+    return {
+      categories: [],
+      series: r.map((l) => ({
+        name: l[i],
+        value: Number(l[a]) || 0
+        // TS Safe
+      }))
+    };
+  if (!o)
+    return {
+      categories: r.map((l) => l[i]),
+      series: [{
+        name: t.seriesName || "Series",
+        data: r.map((l) => Number(l[a]) || 0)
+      }]
+    };
+  const s = [...new Set(r.map((l) => l[i]))], u = {};
+  return r.forEach((l) => {
+    const f = l[o];
+    u[f] || (u[f] = new Array(s.length).fill(0)), u[f][s.indexOf(l[i])] = Number(l[a]) || 0;
+  }), {
+    categories: s,
+    series: Object.keys(u).map((l) => ({ name: l, data: u[l] }))
   };
-};
-function FI(r, t) {
-  return !Array.isArray(r) || r.length === 0 ? { categories: [], series: [] } : ["pie", "donut", "rose"].includes(t.type) ? kI(r) : BI(r);
 }
-const VI = ({ graph_config: r, methods: t = {}, sqlOpsUrls: e }) => {
+function BI(r) {
+  return Array.isArray(r) ? r : Array.isArray(r?.data) ? r.data : r && typeof r == "object" ? Object.values(r) : [];
+}
+const FI = ({ graph_config: r, methods: t = {}, sqlOpsUrls: e }) => {
   if (!r?.config?.type) return null;
   const { config: n, source: i } = r, [a, o] = N_({ categories: [], series: [] });
   switch (k_(() => {
     (async () => {
       let u = {};
       if (i?.type === "method") {
-        const f = t[i.method];
-        u = f ? await Promise.resolve(f()) : {};
+        const h = t[i.method];
+        u = h ? await Promise.resolve(h()) : {};
       } else if (i?.type === "api" && i.url)
         u = await fetch(i.url, {
           method: i.method || "GET",
           headers: i.headers || {}
-        }).then((f) => f.json());
-      else if (i?.type === "sql") {
-        if (!e) {
-          console.error("SQL source requires formJson.endPoints but it is missing");
-          return;
-        }
+        }).then((h) => h.json());
+      else if (i?.type === "sql" && e)
         try {
-          const f = await fetch(e.baseURL + e.registerQuery, {
+          const h = await fetch(e.baseURL + e.registerQuery, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -23710,31 +23723,29 @@ const VI = ({ graph_config: r, methods: t = {}, sqlOpsUrls: e }) => {
               }
             })
           }).then((v) => v.json());
-          if (!f.queryid) {
+          if (!h.queryid) {
             console.log("queryid not generated");
             return;
           }
-          const h = await fetch(e.baseURL + e.runQuery, {
+          u = await fetch(e.baseURL + e.runQuery, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${e?.accessToken}`
             },
             body: JSON.stringify({
-              queryid: f.queryid,
+              queryid: h.queryid,
               filter: {}
             })
           }).then((v) => v.json());
-          u = h?.data?.data ?? h?.data ?? {};
-        } catch (f) {
-          console.error("API fetch failed:", f);
+        } catch (h) {
+          console.error("API fetch failed:", h);
         }
-      }
       console.log("result", u);
-      const l = FI(u, n);
-      o(l);
+      const l = BI(u), f = kI(l, n);
+      o(f);
     })();
-  }, [JSON.stringify(i)]), console.log("data", a), console.log("config", n), r?.config.type) {
+  }, [i?.method, i?.url, i?.type, n.type]), r?.config.type) {
     case "bar":
       return /* @__PURE__ */ or.jsx(OI, { config: n, data: a });
     case "line":
@@ -23748,10 +23759,10 @@ const VI = ({ graph_config: r, methods: t = {}, sqlOpsUrls: e }) => {
       ] });
   }
 };
-function GI({ config: r, methods: t, sqlOpsConfig: e }) {
-  return /* @__PURE__ */ or.jsx("div", { className: " h-full w-full", children: /* @__PURE__ */ or.jsx(VI, { graph_config: r, methods: t || {}, sqlOpsUrls: e }) });
+function zI({ config: r, methods: t, sqlOpsConfig: e }) {
+  return /* @__PURE__ */ or.jsx("div", { className: " h-full w-full", children: /* @__PURE__ */ or.jsx(FI, { graph_config: r, methods: t || {}, sqlOpsUrls: e }) });
 }
 export {
-  GI as LogiksGraph,
-  GI as default
+  zI as LogiksGraph,
+  zI as default
 };

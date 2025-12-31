@@ -6,17 +6,17 @@ import { CanvasRenderer } from "echarts/renderers";
 import type { EChartsOption } from "echarts";
 
 echarts.use([PieChart, TitleComponent, TooltipComponent, LegendComponent, CanvasRenderer]);
-
+type PieItem = { name: string; value: number };
 export default function PieChartComponent({ config, data }: { config: any; data: any }) {
-console.log("PieChartComponent data",data);
+
   const { subType } = config;
   const rawSeries = data.series || []; // raw db result
- 
+
   let finalSeries = {
     type: "pie",
     radius: "60%",
     ...config.options?.series?.[0],     // user overrides default series config
-    data: rawSeries                       // dynamic injected last
+    data: rawSeries.map((s: PieItem) => ({ name: s.name, value: (s as any).value }))                        // dynamic injected last
   };
 
 

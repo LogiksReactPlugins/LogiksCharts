@@ -37,7 +37,7 @@ const generateWaterfall = (series: SeriesOption[], config: any) => {
 
 // ---------- COMPONENT ----------
 export default function BarChartComponent({ config = {}, data = {} }: { config: any; data: any }) {
-console.log("BarChartComponent data",data);
+
 
   const categories = data.categories || [];
   const series = data.series || [];
@@ -48,7 +48,9 @@ console.log("BarChartComponent data",data);
   let finalSeries: SeriesOption[] = series.map((s: SeriesOption, i: number) => ({
     ...(baseSeries[i] || {}),
     ...s,
-    type: "bar"
+    name: s.name,
+    type: "bar",
+    data: Array.isArray(s.data) ? s.data : [],
   }));
 
   if (subType === "stacked") {
@@ -88,7 +90,7 @@ console.log("BarChartComponent data",data);
       echarts={echarts}
       option={options}
       style={{ width: "100%", height: "100%" }}
-    
+
     />
   );
 }

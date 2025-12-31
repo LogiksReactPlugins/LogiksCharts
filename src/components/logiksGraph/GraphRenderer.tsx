@@ -4,7 +4,7 @@ import type { GraphRendererProps } from "./Grpah.types.js";
 import BarChart from "../graphs/barChart.js";
 import LineChart from "../graphs/lineChart.js";
 import PieChart from "../graphs/pieChart.js";
-import { normalizeData } from "../utils.js";
+import { extractRows, normalizeData } from "../utils.js";
 
 
 
@@ -31,12 +31,8 @@ const GraphRenderer = ({ graph_config, methods = {}, sqlOpsUrls }: GraphRenderer
           method: source.method || "GET",
           headers: source.headers || {},
         }).then(r => r.json());
-      } else if (source?.type === "sql") {
+      } else if (source?.type === "sql" && sqlOpsUrls) {
 
-        if (!sqlOpsUrls) {
-          console.error("SQL source requires formJson.endPoints but it is missing");
-          return;
-        }
 
         try {
 
@@ -63,7 +59,7 @@ const GraphRenderer = ({ graph_config, methods = {}, sqlOpsUrls }: GraphRenderer
 
           }
 
-          const res = await fetch(sqlOpsUrls.baseURL + sqlOpsUrls.runQuery, {
+          result = await fetch(sqlOpsUrls.baseURL + sqlOpsUrls.runQuery, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -78,33 +74,27 @@ const GraphRenderer = ({ graph_config, methods = {}, sqlOpsUrls }: GraphRenderer
             })
 
           }).then(res => res.json());
-         
-          
 
-          result = res?.data?.data ?? res?.data ?? {}
 
         } catch (err) {
           console.error("API fetch failed:", err);
         }
 
       }
-   
-console.log("result",result);
 
+      console.log("result", result);
 
-      const normalized = normalizeData(result, config);
-    
+      const rows = extractRows(result)
+      const normalized = normalizeData(rows, config);
 
       setData(normalized);
 
     };
 
     load();
-  }, [JSON.stringify(source)]);
+  }, [source?.method, source?.url, source?.type, config.type]);
 
-  console.log("data", data);
-  console.log("config",config);
-  
+
 
   switch (graph_config?.config.type) {
 

@@ -1,22 +1,21 @@
-export declare const normalizeForPie: (rows: any[]) => {
-    name: any;
-    value: number | undefined;
-}[];
-export declare const normalizeForXYCharts: (rows: any[]) => {
+export declare function normalizeData(data: any[], config: any): {
+    categories: never[];
+    series: {
+        name: any;
+        value: number;
+    }[];
+} | {
+    categories: any[];
+    series: {
+        name: any;
+        data: number[];
+    }[];
+} | {
     categories: any[];
     series: {
         name: string;
-        data: number[];
+        data: number[] | undefined;
     }[];
 };
-export declare function normalizeData(result: any, config: any): {
-    name: any;
-    value: number | undefined;
-}[] | {
-    categories: any[];
-    series: {
-        name: string;
-        data: number[];
-    }[];
-};
+export declare function extractRows(result: any): any;
 //# sourceMappingURL=utils.d.ts.map
