@@ -11,6 +11,7 @@ export interface GraphConfig {
     config: Record<string, any>;
     source: Record<string, any>;
     width?: number;
+    height?:number;
     card_type?: string;
     policy?: string;
 }

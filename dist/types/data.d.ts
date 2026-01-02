@@ -1,6 +1,7 @@
 export declare const example: {
     title: string;
     width: number;
+    height: number;
     config: {
         type: string;
         subType: string;

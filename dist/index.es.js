@@ -23756,7 +23756,7 @@ const FI = ({ graph_config: r, methods: t = {}, sqlOpsUrls: e }) => {
   }
 };
 function zI({ config: r, methods: t, sqlOpsConfig: e }) {
-  const n = r.config?.height ?? 250;
+  const n = r.height ?? 250;
   return /* @__PURE__ */ or.jsx("div", { style: { height: n, width: "100%" }, children: /* @__PURE__ */ or.jsx(FI, { graph_config: r, methods: t || {}, sqlOpsUrls: e }) });
 }
 export {
