@@ -23694,72 +23694,86 @@ function kI(r, t) {
 function BI(r) {
   return Array.isArray(r) ? r : Array.isArray(r?.data) ? r.data : r && typeof r == "object" ? Object.values(r) : [];
 }
-const FI = ({ graph_config: r, methods: t = {}, sqlOpsUrls: e }) => {
+async function FI(r, t, e, n = void 0, i = void 0, a = {}) {
+  try {
+    let o = e;
+    return o || (o = (await fetch(r.baseURL + r.registerQuery, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${r?.accessToken}`
+      },
+      body: JSON.stringify({
+        query: t,
+        srcid: i
+      })
+    }).then((l) => l.json())).data.queryid), await fetch(r.baseURL + r.runQuery, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${r?.accessToken}`
+      },
+      body: JSON.stringify({
+        queryid: o,
+        filter: a,
+        refid: n,
+        page: 0,
+        limit: 1e4
+      })
+    }).then((u) => u.json());
+  } catch (o) {
+    throw o;
+  }
+}
+const VI = ({ graph_config: r, methods: t = {}, sqlOpsConfig: e, module_refid: n }) => {
   if (!r?.config?.type) return null;
-  const { config: n, source: i } = r, [a, o] = N_({ categories: [], series: [] });
+  const { config: i, source: a } = r, [o, s] = N_({ categories: [], series: [] });
   switch (k_(() => {
     (async () => {
-      let u = {};
-      if (i?.type === "method") {
-        const h = t[i.method];
-        u = h ? await Promise.resolve(h()) : {};
-      } else if (i?.type === "api" && i.url)
-        u = await fetch(i.url, {
-          method: i.method || "GET",
-          headers: i.headers || {}
-        }).then((h) => h.json());
-      else if (i?.type === "sql" && e)
+      let l = {};
+      if (a?.type === "method") {
+        const v = t[a.method];
+        l = v ? await Promise.resolve(v()) : {};
+      } else if (a?.type === "api" && a.url)
+        l = await fetch(a.url, {
+          method: a.method || "GET",
+          headers: a.headers || {}
+        }).then((v) => v.json());
+      else if (a?.type === "sql" && e)
         try {
-          const h = await fetch(e.baseURL + e.registerQuery, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${e?.accessToken}`
-            },
-            body: JSON.stringify({
-              query: i
-            })
-          }).then((v) => v.json());
-          if (!h.queryid) {
-            console.log("queryid not generated");
-            return;
-          }
-          u = await fetch(e.baseURL + e.runQuery, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${e?.accessToken}`
-            },
-            body: JSON.stringify({
-              queryid: h.queryid,
-              filter: {}
-            })
-          }).then((v) => v.json());
-        } catch (h) {
-          console.error("API fetch failed:", h);
+          let v;
+          a.queryid || (v = {
+            table: a.table,
+            cols: a.columns ?? a.cols,
+            where: a.where ?? {},
+            orderby: a.orderby ?? "",
+            groupby: a.groupby ?? ""
+          }), l = await FI(e, v, a?.queryid, void 0, n);
+        } catch (v) {
+          console.error("API fetch failed:", v);
         }
-      const l = BI(u), f = kI(l, n);
-      o(f);
+      const f = BI(l), h = kI(f, i);
+      s(h);
     })();
-  }, [i?.method, i?.url, i?.type, n.type]), r?.config.type) {
+  }, [a?.method, a?.url, a?.type, i.type]), r?.config.type) {
     case "bar":
-      return /* @__PURE__ */ or.jsx(OI, { config: n, data: a });
+      return /* @__PURE__ */ or.jsx(OI, { config: i, data: o });
     case "line":
-      return /* @__PURE__ */ or.jsx(RI, { config: n, data: a });
+      return /* @__PURE__ */ or.jsx(RI, { config: i, data: o });
     case "pie":
-      return /* @__PURE__ */ or.jsx(NI, { config: n, data: a });
+      return /* @__PURE__ */ or.jsx(NI, { config: i, data: o });
     default:
       return /* @__PURE__ */ or.jsxs("div", { className: "text-red-500", children: [
         "Unknown chart type: ",
-        n.type
+        i.type
       ] });
   }
 };
-function zI({ config: r, methods: t, sqlOpsConfig: e }) {
-  const n = r.height ?? 250;
-  return /* @__PURE__ */ or.jsx("div", { style: { height: n, width: "100%" }, children: /* @__PURE__ */ or.jsx(FI, { graph_config: r, methods: t || {}, sqlOpsUrls: e }) });
+function GI({ graph_config: r, methods: t, sqlOpsConfig: e, module_refid: n }) {
+  const i = r.height ?? 250;
+  return /* @__PURE__ */ or.jsx("div", { style: { height: i, width: "100%" }, children: /* @__PURE__ */ or.jsx(VI, { module_refid: n, graph_config: r, methods: t || {}, sqlOpsConfig: e }) });
 }
 export {
-  zI as LogiksGraph,
-  zI as default
+  GI as LogiksGraph,
+  GI as default
 };

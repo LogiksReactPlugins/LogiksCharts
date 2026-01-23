@@ -11,7 +11,7 @@ export interface GraphConfig {
     config: Record<string, any>;
     source: Record<string, any>;
     width?: number;
-    height?:number;
+    height?: number;
     card_type?: string;
     policy?: string;
 }
@@ -21,19 +21,26 @@ export interface CardProps {
     methods?: Record<string, Function>;
 }
 
+export type ApiResponse<T = any> = {
+    success?: boolean;
+    message?: string;
+    data: T;
+};
 
 
-export interface GraphRendererProps {
-    graph_config: GraphConfig;
-    methods?: Record<string, Function>;
-    sqlOpsUrls: Record<string, any> | undefined;
-}
-
+export interface sqlQueryProps {
+    table: string;
+    cols: string;
+    where?: Record<string, string>;
+    orderby?: string;
+    groupby?: string;
+};
 export interface GraphProps {
 
-    config: GraphConfig;
+    graph_config: GraphConfig;
     methods?: Record<string, Function>;
     sqlOpsConfig: Record<string, any> | undefined;
+    module_refid: string | undefined
 
 
 }

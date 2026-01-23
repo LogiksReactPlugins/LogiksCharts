@@ -14,14 +14,22 @@ export interface CardProps {
     config: GraphConfig;
     methods?: Record<string, Function>;
 }
-export interface GraphRendererProps {
-    graph_config: GraphConfig;
-    methods?: Record<string, Function>;
-    sqlOpsUrls: Record<string, any> | undefined;
+export type ApiResponse<T = any> = {
+    success?: boolean;
+    message?: string;
+    data: T;
+};
+export interface sqlQueryProps {
+    table: string;
+    cols: string;
+    where?: Record<string, string>;
+    orderby?: string;
+    groupby?: string;
 }
 export interface GraphProps {
-    config: GraphConfig;
+    graph_config: GraphConfig;
     methods?: Record<string, Function>;
     sqlOpsConfig: Record<string, any> | undefined;
+    module_refid: string | undefined;
 }
 //# sourceMappingURL=Grpah.types.d.ts.map

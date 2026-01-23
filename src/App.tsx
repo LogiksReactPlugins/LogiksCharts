@@ -51,7 +51,8 @@ function App() {
     return (
 
         <LogiksGraph
-            config={example}
+            graph_config={example}
+            module_refid={undefined}
             methods={{
                 getTaskStatus, getTaskDataByStatus, getPendingTask, getWorkLoadTask,
                 getTotalRevenue, getTotalWonLostRatio, getTotalEnquiry, getTotalDeal,

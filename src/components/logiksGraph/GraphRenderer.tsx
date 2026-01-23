@@ -1,15 +1,16 @@
 
 import { useEffect, useState } from "react";
-import type { GraphRendererProps } from "./Grpah.types.js";
+import type { GraphProps, sqlQueryProps } from "./Grpah.types.js";
 import BarChart from "../graphs/barChart.js";
 import LineChart from "../graphs/lineChart.js";
 import PieChart from "../graphs/pieChart.js";
 import { extractRows, normalizeData } from "../utils.js";
+import { fetchDataByquery } from "../service.js";
 
 
 
 
-const GraphRenderer = ({ graph_config, methods = {}, sqlOpsUrls }: GraphRendererProps) => {
+const GraphRenderer = ({ graph_config, methods = {}, sqlOpsConfig, module_refid }: GraphProps) => {
 
   if (!graph_config?.config?.type) return null;
 
@@ -31,45 +32,23 @@ const GraphRenderer = ({ graph_config, methods = {}, sqlOpsUrls }: GraphRenderer
           method: source.method || "GET",
           headers: source.headers || {},
         }).then(r => r.json());
-      } else if (source?.type === "sql" && sqlOpsUrls) {
+      } else if (source?.type === "sql" && sqlOpsConfig) {
 
 
         try {
 
-          const resQueryId = await fetch(sqlOpsUrls.baseURL + sqlOpsUrls.registerQuery, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${sqlOpsUrls?.accessToken}`
-            },
-            body: JSON.stringify({
-              query: source
-            })
-          })
-            .then(res => res.json());
-
-
-          if (!resQueryId.queryid) {
-            console.log("queryid not generated");
-            return
-
+          let query: sqlQueryProps | undefined;
+          if (!source.queryid) {
+            query = {
+              table: source.table,
+              cols: source.columns ?? source.cols,
+              where: source.where ?? {},
+              orderby: source.orderby ?? "",
+              groupby: source.groupby ?? ""
+            };
           }
 
-          result = await fetch(sqlOpsUrls.baseURL + sqlOpsUrls.runQuery, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${sqlOpsUrls?.accessToken}`
-            },
-            body: JSON.stringify({
-
-              "queryid": resQueryId.queryid,
-              "filter": {
-
-              }
-            })
-
-          }).then(res => res.json());
+          result = await fetchDataByquery(sqlOpsConfig, query, source?.queryid, undefined, module_refid);
 
 
         } catch (err) {
@@ -78,7 +57,7 @@ const GraphRenderer = ({ graph_config, methods = {}, sqlOpsUrls }: GraphRenderer
 
       }
 
-  
+
       const rows = extractRows(result)
       const normalized = normalizeData(rows, config);
 
@@ -93,7 +72,7 @@ const GraphRenderer = ({ graph_config, methods = {}, sqlOpsUrls }: GraphRenderer
 
   switch (graph_config?.config.type) {
 
-    case "bar": return  <BarChart config={config} data={data} />;
+    case "bar": return <BarChart config={config} data={data} />;
     case "line": return <LineChart config={config} data={data} />;
     case "pie": return <PieChart config={config} data={data} />;
 
