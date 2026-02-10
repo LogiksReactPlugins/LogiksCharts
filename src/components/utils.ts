@@ -6,21 +6,47 @@ export function normalizeData(data: any[], config: any) {
   const keys = Object.keys(sample);
 
   const label = config.labelKey ||
-                keys.find(k => typeof sample[k] !== "number") || keys[0];
+    keys.find(k => typeof sample[k] !== "number") || keys[0];
 
   const value = config.valueKey ||
-                keys.find(k => typeof sample[k] === "number") || keys[1];
+    keys.find(k => typeof sample[k] === "number") || keys[1];
 
   const group = config.seriesKey;
 
   // PIE/DONUT — unified return shape 
-  if (["pie","donut","rose"].includes(config.type)) {
+  if (["pie", "donut", "rose", "funnel"].includes(config.type)) {
     return {
       categories: [],
       series: data.map(r => ({
         name: r[label],
         value: Number(r[value]) || 0     // TS Safe
       }))
+    };
+  }
+
+  if (config.type === "heatmap") {
+    const xKey = config.xKey || keys[0];   // e.g. hour
+    const yKey = config.yKey || keys[1];   // e.g. day
+    const vKey = config.valueKey || keys.find(k => typeof sample[k] === "number");
+
+    const xCategories = [...new Set(data.map(r => r[xKey]))];
+    const yCategories = [...new Set(data.map(r => r[yKey]))];
+
+    const seriesData = data.map(r => ([
+      xCategories.indexOf(r[xKey]),
+      yCategories.indexOf(r[yKey]),
+      Number(r[vKey]) || 0
+    ]));
+
+    return {
+      xCategories,
+      yCategories,
+      series: [
+        {
+          name: config.seriesName || "Heatmap",
+          data: seriesData
+        }
+      ]
     };
   }
 
@@ -37,17 +63,17 @@ export function normalizeData(data: any[], config: any) {
 
   // MULTI SERIES
   const categories = [...new Set(data.map(r => r[label]))];
-  const grouped:Record<string,number[]> = {};
+  const grouped: Record<string, number[]> = {};
 
   data.forEach(r => {
     const g = r[group];
-    if(!grouped[g]) grouped[g]=new Array(categories.length).fill(0);
-    grouped[g][categories.indexOf(r[label])] = Number(r[value])||0;
+    if (!grouped[g]) grouped[g] = new Array(categories.length).fill(0);
+    grouped[g][categories.indexOf(r[label])] = Number(r[value]) || 0;
   });
 
   return {
     categories,
-    series:Object.keys(grouped).map(name=>({ name,data:grouped[name] }))
+    series: Object.keys(grouped).map(name => ({ name, data: grouped[name] }))
   };
 }
 
