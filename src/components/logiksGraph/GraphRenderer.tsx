@@ -12,6 +12,7 @@ import HeatmapChart from "../graphs/HeatMap.js";
 
 
 
+
 const GraphRenderer = ({ graph_config, methods = {}, sqlOpsConfig, module_refid }: GraphProps) => {
 
   if (!graph_config?.config?.type) return null;
@@ -80,7 +81,6 @@ const GraphRenderer = ({ graph_config, methods = {}, sqlOpsConfig, module_refid 
   }, [source?.method, source?.url, source?.type, config.type]);
 
   
-
 
   switch (graph_config?.config.type) {
 

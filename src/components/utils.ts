@@ -24,6 +24,32 @@ export function normalizeData(data: any[], config: any) {
     };
   }
 
+  if (config.type === "heatmap") {
+    const xKey = config.xKey || keys[0];   // e.g. hour
+    const yKey = config.yKey || keys[1];   // e.g. day
+    const vKey = config.valueKey || keys.find(k => typeof sample[k] === "number");
+
+    const xCategories = [...new Set(data.map(r => r[xKey]))];
+    const yCategories = [...new Set(data.map(r => r[yKey]))];
+
+    const seriesData = data.map(r => ([
+      xCategories.indexOf(r[xKey]),
+      yCategories.indexOf(r[yKey]),
+      Number(r[vKey]) || 0
+    ]));
+
+    return {
+      xCategories,
+      yCategories,
+      series: [
+        {
+          name: config.seriesName || "Heatmap",
+          data: seriesData
+        }
+      ]
+    };
+  }
+
   // SINGLE SERIES
   if (!group) {
     return {

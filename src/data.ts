@@ -388,3 +388,14 @@ export const funnelChartBasic = {
     type: "funnel"
   }
 };
+
+export const heatmapBasic = {
+  height: 350,
+  source: {
+    type: "method",
+    method: "getHeatmapRows"
+  },
+  config: {
+    type: "heatmap"
+  }
+};
