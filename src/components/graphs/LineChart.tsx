@@ -36,8 +36,7 @@ export default function LineChartComponent({ config, data }: Props) {
     ...s,                       // inject dynamic data from API
     name: s.name,
     type: "line",
-    data: Array.isArray(s.data) ? s.data : [],
-    areaStyle: subType === "area" || subType === "stacked" ? {} : undefined
+    data: Array.isArray(s.data) ? s.data : []
   }));
 
   // Handle subtypes
@@ -53,23 +52,46 @@ export default function LineChartComponent({ config, data }: Props) {
     finalSeries = finalSeries.map(s => ({ ...s, stack: "total", areaStyle: {} }));
   }
 
+
+  const {
+    xAxis: userXAxis,
+    yAxis: userYAxis,
+    series: _ignoredSeries,
+    ...safeOptions
+  } = config.options || {};
+
+  const normalizedXAxis = Array.isArray(userXAxis)
+    ? userXAxis[0]
+    : userXAxis;
+
+  const normalizedYAxis = Array.isArray(userYAxis)
+    ? userYAxis[0]
+    : userYAxis;
+
+
+
   const options: EChartsOption = {
-    tooltip: { trigger: "axis", ...config.options?.tooltip },  // user overrides trigger
+    ...safeOptions,
 
+    tooltip: { trigger: "axis", ...safeOptions.tooltip },
+    legend: { show: true, ...safeOptions.legend },
     xAxis: {
-      type: "category",                // default
-      ...config.options?.xAxis,        // user config replaces default
-      data: categories                 // dynamic data always last
+      type: "category",
+       boundaryGap: subType === "area" || subType === "stacked" ? false : true,
+      ...normalizedXAxis,   // user styles (boundaryGap etc.)
+      data: categories      // engine always wins
     },
+    yAxis: Array.isArray(userYAxis)
+      ? userYAxis
+      : {
+        type: "value",
+        ...normalizedYAxis
+      },
 
-    yAxis: {
-      type: "value",
-      ...config.options?.yAxis         // user config replaces default
-    },
 
-    ...config.options,                 // global options last if needed (optional)
     series: finalSeries
   };
+
 
 
 
