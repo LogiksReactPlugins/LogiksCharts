@@ -1,27 +1,20 @@
+export declare function formatLabel(value: unknown): string;
 export declare function normalizeData(data: any[], config: any): {
     categories: never[];
     series: {
-        name: any;
+        name: string;
         value: number;
     }[];
     xCategories?: never;
     yCategories?: never;
 } | {
-    xCategories: any[];
-    yCategories: any[];
+    xCategories: string[];
+    yCategories: string[];
     series: {
-        name: any;
+        name: string;
         data: number[][];
     }[];
     categories?: never;
-} | {
-    categories: any[];
-    series: {
-        name: any;
-        data: number[];
-    }[];
-    xCategories?: never;
-    yCategories?: never;
 } | {
     categories: any[];
     series: {

@@ -425,6 +425,7 @@ export declare const semiDonutChart: {
     };
 };
 export declare const funnelChartBasic: {
+    title: string;
     height: number;
     source: {
         type: string;
@@ -436,6 +437,7 @@ export declare const funnelChartBasic: {
 };
 export declare const heatmapBasic: {
     height: number;
+    title: string;
     source: {
         type: string;
         method: string;

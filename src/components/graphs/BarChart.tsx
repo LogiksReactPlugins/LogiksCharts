@@ -17,18 +17,20 @@ function generateWaterfall(
   const main = series[0] as any;
   const values: number[] = Array.isArray(main?.data) ? main.data : [];
 
- let sum = 0;
-const placeholder = values.map((_, i) => {
-  if (i === 0) return 0;
-  sum += values[i - 1] ?? 0;
-  return sum;
-});
+  let sum = 0;
+  const placeholder = values.map((_, i) => {
+    if (i === 0) return 0;
+    sum += values[i - 1] ?? 0;
+    return sum;
+  });
 
   return [
     // Placeholder (offset)
     {
       ...(baseSeries[0] || {}),
-      name: baseSeries[0]?.name || "",
+      name: "", //baseSeries[0]?.name || ""
+      silent: true,
+      tooltip: { show: false },
       type: "bar",
       stack: "total",
       data: placeholder,
@@ -85,13 +87,13 @@ export default function BarChartComponent({ config = {}, data = {} }: { config: 
     finalSeries = finalSeries.map(s => ({ ...s, stack: "total" }));
   }
 
-  if (subType === "sorting" &&  finalSeries.length === 1) {
+  if (subType === "sorting" && finalSeries.length === 1) {
     finalSeries = finalSeries.map(s => ({ ...s, realtimeSort: true }));
   }
 
-if (subType === "waterfall") {
-  finalSeries = generateWaterfall(finalSeries, baseSeries);
-}
+  if (subType === "waterfall") {
+    finalSeries = generateWaterfall(finalSeries, baseSeries);
+  }
   //  strip unsafe options
   const {
     xAxis: userXAxis,
@@ -108,46 +110,47 @@ if (subType === "waterfall") {
     ? userYAxis[0]
     : userYAxis;
 
-const isHorizontal =
-  normalizedXAxis?.type === "value" ||
-  normalizedYAxis?.type === "category";
+  const isHorizontal =
+    normalizedXAxis?.type === "value" ||
+    normalizedYAxis?.type === "category";
 
-const options: EChartsOption = {
-  ...safeOptions,
+  const options: EChartsOption = {
+    ...safeOptions,
 
-  tooltip: { trigger: "axis", ...safeOptions.tooltip },
-  legend: {show: true, ...safeOptions.legend },
-  grid: { containLabel: true, ...safeOptions.grid },
+    tooltip: { trigger: "axis", ...safeOptions.tooltip },
+    legend: {
+      show: true, ...safeOptions.legend
+    },
+    grid: { containLabel: true, ...safeOptions.grid },
 
-  xAxis: isHorizontal
-    ? {
+    xAxis: isHorizontal
+      ? {
         type: "value",
         ...normalizedXAxis
       }
-    : {
+      : {
         type: "category",
         ...normalizedXAxis,
         data: categories
       },
 
-  yAxis: isHorizontal
-    ? {
+    yAxis: isHorizontal
+      ? {
         type: "category",
         ...normalizedYAxis,
         data: categories
       }
-    : Array.isArray(userYAxis)
-      ? userYAxis
-      : {
+      : Array.isArray(userYAxis)
+        ? userYAxis
+        : {
           type: "value",
           ...normalizedYAxis
         },
 
-  series: finalSeries
-};
+    series: finalSeries
+  };
 
-  console.log("options",options);
-  
+
   return (
     <ReactEChartsCore
       echarts={echarts}

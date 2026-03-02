@@ -379,6 +379,7 @@ export const semiDonutChart = {
 };
 
 export const funnelChartBasic = {
+   title: "Sales vs Growth",
   height: 350,
   source: {
     type: "method",
@@ -391,6 +392,7 @@ export const funnelChartBasic = {
 
 export const heatmapBasic = {
   height: 350,
+   title: "Sales vs Growth",
   source: {
     type: "method",
     method: "getHeatmapRows"

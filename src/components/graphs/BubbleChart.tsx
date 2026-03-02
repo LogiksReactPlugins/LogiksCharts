@@ -4,6 +4,7 @@ import { ScatterChart } from "echarts/charts";
 import { TooltipComponent, GridComponent, TitleComponent } from "echarts/components";
 import { CanvasRenderer } from "echarts/renderers";
 import type { EChartsOption } from "echarts";
+import { formatLabel } from "../utils";
 
 echarts.use([ScatterChart, TooltipComponent, GridComponent, TitleComponent, CanvasRenderer]);
 
@@ -13,7 +14,7 @@ export default function BubbleChartComponent({ config, data }: any) {
     const rows = Array.isArray(data) ? data : [];
 
     const seriesData = rows.map((r: any) => ({
-        name: r[labelKey],
+        name: formatLabel(r[labelKey]),
         value: [
             Number(r[xKey]) || 0,
             Number(r[yKey]) || 0,
@@ -32,7 +33,7 @@ export default function BubbleChartComponent({ config, data }: any) {
                 type: "scatter",
                 data: seriesData,
                 symbolSize: (val: number[]) =>
-                   Math.max(6, Math.sqrt(val[2] ?? 0) * 2)// scalable bubble size
+                    Math.max(6, Math.sqrt(val[2] ?? 0) * 2)// scalable bubble size
             }
         ]
     };

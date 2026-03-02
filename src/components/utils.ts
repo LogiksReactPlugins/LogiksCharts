@@ -1,3 +1,16 @@
+export function formatLabel  (value: unknown): string  {
+  if (typeof value !== "string") return String(value ?? "");
+
+  return value
+    .replace(/_/g, " ")          // in_progress → in progress
+    .toLowerCase()               // normalize case
+    .split(" ")
+    .filter(Boolean)
+    .map(w => w[0]?.toUpperCase() + w.slice(1))
+    .join(" ");                  // In Progress
+};
+
+
 export function normalizeData(data: any[], config: any) {
   if (!Array.isArray(data) || data.length === 0)
     return { categories: [], series: [] };
@@ -18,7 +31,7 @@ export function normalizeData(data: any[], config: any) {
     return {
       categories: [],
       series: data.map(r => ({
-        name: r[label],
+        name: formatLabel(r[label]),
         value: Number(r[value]) || 0     // TS Safe
       }))
     };
@@ -29,12 +42,12 @@ export function normalizeData(data: any[], config: any) {
     const yKey = config.yKey || keys[1];   // e.g. day
     const vKey = config.valueKey || keys.find(k => typeof sample[k] === "number");
 
-    const xCategories = [...new Set(data.map(r => r[xKey]))];
-    const yCategories = [...new Set(data.map(r => r[yKey]))];
+    const xCategories = [...new Set(data.map(r => formatLabel(r[xKey])))];
+    const yCategories = [...new Set(data.map(r => formatLabel(r[yKey])))];
 
     const seriesData = data.map(r => ([
-      xCategories.indexOf(r[xKey]),
-      yCategories.indexOf(r[yKey]),
+      xCategories.indexOf(formatLabel(r[xKey])),
+      yCategories.indexOf(formatLabel(r[yKey])),
       Number(r[vKey]) || 0
     ]));
 
@@ -43,7 +56,7 @@ export function normalizeData(data: any[], config: any) {
       yCategories,
       series: [
         {
-          name: config.seriesName || "Heatmap",
+          name: formatLabel(config.seriesName || "Heatmap"),
           data: seriesData
         }
       ]
@@ -55,7 +68,7 @@ export function normalizeData(data: any[], config: any) {
     return {
       categories: data.map(r => r[label]),
       series: [{
-        name: config.seriesName || "Series",
+        name: formatLabel(config.seriesName || "Series"),
         data: data.map(r => Number(r[value]) || 0)
       }]
     };
@@ -73,7 +86,7 @@ export function normalizeData(data: any[], config: any) {
 
   return {
     categories,
-    series: Object.keys(grouped).map(name => ({ name, data: grouped[name] }))
+    series: Object.keys(grouped).map(name => ({ name: formatLabel(name), data: grouped[name] }))
   };
 }
 

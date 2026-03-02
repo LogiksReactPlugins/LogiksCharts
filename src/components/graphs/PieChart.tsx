@@ -48,7 +48,7 @@ export default function PieChartComponent({ config, data }: { config: any; data:
     series: [finalSeries]
   };
 
-  console.log("options",options);
+ 
   
 
   return (

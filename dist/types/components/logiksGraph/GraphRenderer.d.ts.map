@@ -1,1 +1,1 @@
-{"version":3,"file":"GraphRenderer.d.ts","sourceRoot":"","sources":["../../../../src/components/logiksGraph/GraphRenderer.tsx"],"names":[],"mappings":"AAEA,OAAO,KAAK,EAAE,UAAU,EAAiB,MAAM,kBAAkB,CAAC;AAalE,QAAA,MAAM,aAAa,GAAI,uDAA4D,UAAU,mDAgF5F,CAAC;AAEF,eAAe,aAAa,CAAC"}
+{"version":3,"file":"GraphRenderer.d.ts","sourceRoot":"","sources":["../../../../src/components/logiksGraph/GraphRenderer.tsx"],"names":[],"mappings":"AAEA,OAAO,KAAK,EAAE,UAAU,EAAiB,MAAM,kBAAkB,CAAC;AAalE,QAAA,MAAM,aAAa,GAAI,uDAA4D,UAAU,mDAkF5F,CAAC;AAEF,eAAe,aAAa,CAAC"}
